@@ -47,7 +47,7 @@ class Library(object):
             for book in shelf.books.itervalues():
                 print(
                     "{:^20} | {:^20} | {:^10} | {}"
-                    .format(book.book_id, book.author, book.status, book.due)
+                    .format(book.book_id, book.author, book.status, book.due_date)
                 )
 
 
@@ -67,7 +67,7 @@ class Book(object):
         self.author = author
         self.copy = copy
         self.status = "Checked In"
-        self.due = due
+        self.due_date = due
         self.shelf = shelf
         self.last_shelf = shelf
         self.details = kwargs
@@ -81,7 +81,7 @@ class Book(object):
     @property
     def status(self):
         today = datetime.date.today()
-        if self.due and self.due < today:
+        if self.due_date and self.due_date < today:
             return "Overdue"
         else:
             return self._status
@@ -115,17 +115,17 @@ class Book(object):
         else:
             print("Cannot reshelf: no previous shelf on record.")
 
-    def check_out(self, days=0, weeks=2):
+    def checkout(self, days=0, weeks=2):
         """Check out book from library."""
         self.enshelf(checked_out)
         self.status = "Checked Out"
-        self.due = set_due_date(days=days, weeks=weeks)
+        self.due_date = set_due_date(days=days, weeks=weeks)
 
-    def check_in(self):
+    def checkin(self):
         """Check in book to library."""
         self.reshelf()
         self.status = "Checked In"
-        self.due = None
+        self.due_date = None
 
     def latest_copy(self, search_lib=None):
         """Find the lastest copy of a book."""
