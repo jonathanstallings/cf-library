@@ -32,7 +32,7 @@ class Library(object):
 
     def add_shelf(self, name):
         shelf = Shelf(name, self)
-        self.shelves[name] = Shelf(name)
+        self.shelves[name] = shelf
         return shelf
 
     def report_books(self):
@@ -86,11 +86,7 @@ class Book(object):
         if self.shelf == shelf:
             print("Book already in shelf.")
         elif self.book_id in shelf.books:
-            for book in shelf.books.values():
-                if book.title == self.title:
-                    latest_copy = book.copy
-            self.copy = latest_copy + 1
-            self.enshelf(shelf)
+            print("The same copy is already on the shelf!")
         else:
             self.unshelf()
             self.shelf = shelf
@@ -122,9 +118,23 @@ class Book(object):
         self.status = "Checked In"
         self.due = None
 
-    def add_copy(self):
-        new_copy = copy.deepcopy(self)
-        new_copy.shelf = None
+    def latest_copy(self, search_lib=None):
+        """Find the lastest copy of a book."""
+        library_to_search = search_lib or self.shelf.library
+        latest_copy = 1
+        for shelf in library_to_search.shelves.values():
+            for book in shelf.books.values():
+                if book.title == self.title and book.copy > latest_copy:
+                    latest_copy = book.copy
+        return latest_copy
+
+    def add_copies(self, copy_num=1):
+        """Add a given number of book copies to same location."""
+        for x in range(copy_num):
+            new_copy = copy.deepcopy(self)
+            new_copy.shelf = None
+            new_copy.copy = self.latest_copy() + 1
+            new_copy.enshelf(self.shelf)
         return new_copy
 
 
