@@ -18,7 +18,7 @@ import datetime
 
 
 def set_due_date(days=0, weeks=2):
-    """Set a due date based on time delta in days or weeks."""
+    """Set a due date based on time delta in days or weeks from today."""
     today = datetime.date.today()
     due_date = today + datetime.timedelta(days, weeks)
     return due_date
@@ -106,11 +106,11 @@ class Book(object):
         else:
             print("Cannot reshelf: no previous shelf on record.")
 
-    def check_out(self, due=set_due_date()):
+    def check_out(self, days=0, weeks=2):
         """Check out book from library."""
         self.enshelf(checked_out)
         self.status = "Checked Out"
-        self.due = due
+        self.due = set_due_date(days=days, weeks=weeks)
 
     def check_in(self):
         """Check in book to library."""
