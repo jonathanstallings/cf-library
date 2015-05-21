@@ -31,7 +31,7 @@ class Library(object):
         self.shelves = {}
 
     def add_shelf(self, name):
-        shelf = Shelf(name)
+        shelf = Shelf(name, self)
         self.shelves[name] = Shelf(name)
         return shelf
 
@@ -44,8 +44,9 @@ class Library(object):
 
 class Shelf(object):
     """A class for shelves in a library."""
-    def __init__(self, name):
+    def __init__(self, name, library=None):
         self.name = name
+        self.library = library
         self.books = {}
 
 
