@@ -29,6 +29,8 @@ class Library(object):
     def __init__(self, name):
         self.name = name
         self.shelves = {}
+        # self.unshelved = {}
+        # self.checked_out = {}
 
     def add_shelf(self, name):
         shelf = Shelf(name, self)
@@ -37,9 +39,13 @@ class Library(object):
 
     def report_books(self):
         """Report all books in library."""
-        for shelf in self.shelves:
-            for book in shelf.books:
-                print(book.title)
+        for shelf in self.shelves.itervalues():
+            print("\n{shelf}".format(shelf=shelf.name))
+            for book in shelf.books.itervalues():
+                print(
+                    "{:^20} | {:^20} | {:^10} | {}"
+                    .format(book.book_id, book.author, book.status, book.due)
+                )
 
 
 class Shelf(object):
@@ -131,11 +137,11 @@ class Book(object):
     def add_copies(self, copy_num=1):
         """Add a given number of book copies to same location."""
         for x in range(copy_num):
-            new_copy = copy.deepcopy(self)
-            new_copy.shelf = None
-            new_copy.copy = self.latest_copy() + 1
-            new_copy.enshelf(self.shelf)
-        return new_copy
+            new_book_copy = copy.deepcopy(self)
+            new_book_copy.shelf = None
+            new_book_copy.copy = self.latest_copy() + 1
+            new_book_copy.enshelf(self.shelf)
+        return new_book_copy
 
 
 library = Library("Lake City Public Library")
@@ -168,3 +174,7 @@ book3 = Book(
     ISBN=9781593434427,
     page_count=100
 )
+
+book1.enshelf(shelf1)
+book2.enshelf(shelf2)
+book3.enshelf(shelf3)
