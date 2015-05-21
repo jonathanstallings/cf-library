@@ -14,17 +14,25 @@ also setup a repl.it account and enter the saved URL.
 """
 
 import copy
+import datetime
+
+
+def set_due_date(days=0, weeks=2):
+    """Set a due date based on time delta in days or weeks."""
+    today = datetime.date.today()
+    due_date = today + datetime.timedelta(days, weeks)
+    return due_date
 
 
 class Library(object):
     """A class for a library."""
     def __init__(self, name):
         self.name = name
-        self.shelves = []
+        self.shelves = {}
 
     def add_shelf(self, name):
         shelf = Shelf(name)
-        self.shelves.append(shelf)
+        self.shelves[name] = Shelf(name)
         return shelf
 
     def report_books(self):
@@ -44,7 +52,7 @@ class Shelf(object):
 class Book(object):
     """A class for books."""
     def __init__(self, title="", author="", copy=1, status="Checked In",
-                 due="", shelf=None, **kwargs):
+                 due=None, shelf=None, **kwargs):
         self.title = title
         self.author = author
         self.copy = copy
@@ -59,13 +67,32 @@ class Book(object):
             "{title} c.{copy}".format(title=self.title, copy=self.copy)
         )
 
+    @property
+    def status(self):
+        today = datetime.date.today()
+        if self.due and self.due < today:
+            return "Overdue"
+        else:
+            return self._status
+
+    @status.setter
+    def status(self, status):
+        self._status = status
+
     def enshelf(self, shelf):
         """Add a book to a shelf."""
-        if self.book_id not in shelf.books:
+        if self.shelf == shelf:
+            print("Book already in shelf.")
+        elif self.book_id in shelf.books:
+            for book in shelf.books.values():
+                if book.title == self.title:
+                    latest_copy = book.copy
+            self.copy = latest_copy + 1
+            self.enshelf(shelf)
+        else:
+            self.unshelf()
             self.shelf = shelf
             shelf.books[self.book_id] = self
-        else:
-            print("Book already in shelf.")
 
     def unshelf(self):
         """Remove a book from its shelf."""
@@ -73,7 +100,7 @@ class Book(object):
             self.shelf.books.pop(self.book_id)
             self.shelf = None
 
-    def check_out(self, due=""):
+    def check_out(self, due=set_due_date()):
         """Check out book from library."""
         self.unshelf()
         self.enshelf(checked_out)
@@ -83,8 +110,8 @@ class Book(object):
     def add_copy(self):
         new_copy = copy.deepcopy(self)
         new_copy.shelf = None
-        new_copy.copy += 1
-        new_copy.enshelf(self.shelf)
+        return new_copy
+
 
 library = Library("Lake City Public Library")
 
