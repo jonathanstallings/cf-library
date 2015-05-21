@@ -181,3 +181,8 @@ book3 = Book(
 book1.enshelf(shelf1)
 book2.enshelf(shelf2)
 book3.enshelf(shelf3)
+
+book1.add_copies(2)
+book1.checkout()
+
+library.report_books()
