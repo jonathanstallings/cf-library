@@ -37,6 +37,9 @@ class Library(object):
         self.shelves[name] = shelf
         return shelf
 
+    def remove_shelf(self, shelf):
+        del self.shelves[shelf]
+
     def report_books(self):
         """Report all books in library."""
         for shelf in self.shelves.itervalues():
