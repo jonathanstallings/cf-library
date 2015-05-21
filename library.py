@@ -51,14 +51,15 @@ class Shelf(object):
 
 class Book(object):
     """A class for books."""
-    def __init__(self, title="", author="", copy=1, status="Checked In",
-                 due=None, shelf=None, **kwargs):
+    def __init__(self, title="", author="", copy=1, due=None, shelf=None,
+                 **kwargs):
         self.title = title
         self.author = author
         self.copy = copy
-        self.status = status
+        self.status = "Checked In"
         self.due = due
         self.shelf = shelf
+        self.last_shelf = shelf
         self.details = kwargs
 
     @property
@@ -98,14 +99,27 @@ class Book(object):
         """Remove a book from its shelf."""
         if self.shelf:
             self.shelf.books.pop(self.book_id)
+            self.last_shelf = self.shelf
             self.shelf = None
+
+    def reshelf(self):
+        """Add a book to its last visited shelf."""
+        if self.last_shelf:
+            self.enshelf(self.last_shelf)
+        else:
+            print("Cannot reshelf: no previous shelf on record.")
 
     def check_out(self, due=set_due_date()):
         """Check out book from library."""
-        self.unshelf()
         self.enshelf(checked_out)
         self.status = "Checked Out"
         self.due = due
+
+    def check_in(self):
+        """Check in book to library."""
+        self.reshelf()
+        self.status = "Checked In"
+        self.due = None
 
     def add_copy(self):
         new_copy = copy.deepcopy(self)
