@@ -20,7 +20,7 @@ import datetime
 def set_due_date(days=0, weeks=2):
     """Set a due date based on time delta in days or weeks from today."""
     today = datetime.date.today()
-    due_date = today + datetime.timedelta(days, weeks)
+    due_date = today + datetime.timedelta(days=days, weeks=weeks)
     return due_date
 
 
