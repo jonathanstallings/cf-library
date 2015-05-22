@@ -49,8 +49,10 @@ def set_due_date(days=0, weeks=0):
 class Library(object):
     """A class for a library."""
     def __init__(self, name):
+        """Initialize a library with shelf list and Checked Out 'shelf'."""
         self.name = name
         self.shelves = []
+        self.checked_out = self.add_shelf("Checked Out")
 
     def __str__(self):
         return "{name}".format(name=self.name)
@@ -97,7 +99,7 @@ class Library(object):
         )
         for shelf in self.shelves[1:]:
             shelf.report()
-        checked_out.report()
+        self.checked_out.report()
 
 
 class Shelf(object):
@@ -256,7 +258,7 @@ class Book(object):
             days: time delta in days from today
             weeks: time delt in weeks from today
         """
-        self.enshelf(checked_out)
+        self.enshelf(self.shelf.library.checked_out)
         self.status = "Checked Out"
         self.due_date = set_due_date(days=days, weeks=weeks)
 
@@ -306,52 +308,53 @@ class Book(object):
         return results
 
 
-# if __name__ == '__main__':
-show_logo()
-library = Library("Lake City Public Library")
+if __name__ == '__main__':
+    show_logo()
+    library = Library("Lake City Public Library")
+    response = raw_input("Press enter to begin demonstration.")
 
-checked_out = library.add_shelf("Checked Out")
-shelf1 = library.add_shelf("Shelf 1")
-shelf2 = library.add_shelf("Shelf 2")
-shelf3 = library.add_shelf("Shelf 3")
+    # Add some shelves to the library.
+    shelf1 = library.add_shelf("Fantasy")
+    shelf2 = library.add_shelf("Science Fiction")
+    shelf3 = library.add_shelf("Cooking")
 
-book1 = Book(
-    title="The Scar",
-    author="Virginia Wolfe",
-    call_num="332.024 R3903o 2015",
-    ISBN=9781591847557,
-    page_count=211
-)
+    book1 = Book(
+        title="The Scar",
+        author="Virginia Wolfe",
+        call_num="332.024 R3903o 2015",
+        ISBN=9781591847557,
+        page_count=211
+    )
 
-book2 = Book(
-    title="Winning",
-    author="Charlie Sheen",
-    call_num="364.989 R3903o 2010",
-    ISBN=9783434147557,
-    page_count=150
-)
+    book2 = Book(
+        title="Winning",
+        author="Charlie Sheen",
+        call_num="364.989 R3903o 2010",
+        ISBN=9783434147557,
+        page_count=150
+    )
 
-book3 = Book(
-    title="Wounded",
-    author="Jim Bush",
-    call_num="334.053 R3903o 2014",
-    ISBN=9781593434427,
-    page_count=100
-)
+    book3 = Book(
+        title="Wounded",
+        author="Jim Bush",
+        call_num="334.053 R3903o 2014",
+        ISBN=9781593434427,
+        page_count=100
+    )
 
-book4 = Book(
-    title="Unbowed",
-    author="Sean Ramses",
-    call_num="323.054 T3433o 1978",
-    ISBN=9781343534556,
-    page_count=565
-)
+    book4 = Book(
+        title="Unbowed",
+        author="Sean Ramses",
+        call_num="323.054 T3433o 1978",
+        ISBN=9781343534556,
+        page_count=565
+    )
 
-book1.enshelf(shelf1)
-book2.enshelf(shelf2)
-shelf3.add_books(book3, book4)
+    book1.enshelf(shelf1)
+    book2.enshelf(shelf2)
+    shelf3.add_books(book3, book4)
 
-book1.add_copies(2)
-book1.checkout()
+    book1.add_copies(2)
+    book1.checkout()
 
-library.report()
+    library.report()
