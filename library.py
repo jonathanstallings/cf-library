@@ -42,31 +42,29 @@ class Library(object):
     """A class for a library."""
     def __init__(self, name):
         self.name = name
-        self.shelves = {}
+        self.shelves = []
 
     def __str__(self):
         return "{name}".format(name=self.name)
 
     def add_shelf(self, name):
         shelf = Shelf(name, self)
-        self.shelves[name] = shelf
+        self.shelves.append(shelf)
         return shelf
 
     def remove_shelf(self, shelf):
-        del self.shelves[shelf]
+        self.shelves.remove(shelf)
 
-    def report_books(self):
+    def report(self):
         """Report all books in library."""
         print("{library} Inventory\n".format(library=self))
         print(
             "{:^20} | {:^20} | {:^10} | {:^20}\n"
             .format("Title", "Author", "Status", "Due Date")
         )
-        for shelf in self.shelves.itervalues():
-            print(
-                "{:_<80}".format(shelf.name)
-            )
-            shelf.report_books()
+        for shelf in self.shelves[1:]:
+            shelf.report()
+        checked_out.report()
 
 
 class Shelf(object):
@@ -75,6 +73,9 @@ class Shelf(object):
         self.name = name
         self.library = library
         self.books = {}
+
+    def __str__(self):
+        return "{name}".format(name=self.name)
 
     def add_books(self, *args):
         """Add books objects to shelf."""
@@ -87,8 +88,9 @@ class Shelf(object):
             if book.book_id in self.books:
                 book.unshelf()
 
-    def report_books(self):
+    def report(self):
         """Report books for tabular report."""
+        print("{:_<80}".format(self.name))
         for book in self.books.itervalues():
             book.report()
         print("\n")
@@ -192,10 +194,10 @@ class Book(object):
         self.due_date = None
 
     def get_latest_copy(self, search_lib=None):
-        """Find the lastest copy of a book."""
+        """Find the number of the lastest copy of a book."""
         library_to_search = search_lib or self.shelf.library
         latest_copy = 1
-        for shelf in library_to_search.shelves.values():
+        for shelf in library_to_search.shelves:
             for book in shelf.books.values():
                 if book.title == self.title and book.copy > latest_copy:
                     latest_copy = book.copy
@@ -244,11 +246,19 @@ book3 = Book(
     page_count=100
 )
 
+book4 = Book(
+    title="Unbowed",
+    author="Sean Ramses",
+    call_num="323.054 T3433o 1978",
+    ISBN=9781343534556,
+    page_count=565
+)
+
 book1.enshelf(shelf1)
 book2.enshelf(shelf2)
-book3.enshelf(shelf3)
+shelf3.add_books(book3, book4)
 
 book1.add_copies(2)
 book1.checkout()
 
-library.report_books()
+library.report()
