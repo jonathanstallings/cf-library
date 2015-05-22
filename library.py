@@ -97,6 +97,7 @@ class Library(object):
         return self.shelves[index]
 
     def show_stats(self):
+        """Show basic current stats for library."""
         num_shelves = len(self.shelves) - 1
         num_checked_out = len(self.shelves[0].books)
         num_books = 0
