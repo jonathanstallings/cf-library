@@ -31,7 +31,7 @@ def show_logo():
     print logo
 
 
-def pause_demo():
+def pause():
     raw_input("\nPress enter to continue.\n")
 
 
@@ -96,6 +96,17 @@ class Library(object):
         """
         return self.shelves[index]
 
+    def show_stats(self):
+        num_shelves = len(self.shelves) - 1
+        num_checked_out = len(self.shelves[0].books)
+        num_books = 0
+        for shelf in self.shelves[1:]:
+            num_books += len(shelf.books)
+        print(
+            "Stats: {b} books on {s} shelves. {c} books currently checked out."
+            .format(b=num_books, s=num_shelves, c=num_checked_out)
+        )
+
     def report(self):
         """Report all books in library in tabular format."""
         print("{library} Inventory\n".format(library=self))
@@ -106,7 +117,8 @@ class Library(object):
         for shelf in self.shelves[1:]:
             shelf.report()
         self.checked_out.report()
-        pause_demo()
+        self.show_stats()
+        pause()
 
 
 class Shelf(object):
@@ -227,6 +239,10 @@ class Book(object):
 
     def show_details(self):
         """Show detailed book information."""
+        print(
+            "Book details for {book}:\n"
+            .format(book=self.title)
+        )
         print self
         for key, value in self.details.iteritems():
             print("{k}: {v}".format(k=key, v=value))
@@ -291,7 +307,7 @@ class Book(object):
         self.status = "Checked Out"
         self.due_date = set_due_date(days=days, weeks=weeks)
         print (
-            "{book} checked out; due date is {date}."
+            "{book} checked out; due date is {date}.\n"
             .format(book=self.title, date=self.due_date)
         )
 
@@ -333,6 +349,7 @@ class Book(object):
 
         Returns: a list of the new book copies.
         """
+        print("Adding copies.")
         results = []
         for x in range(copy_num):
             new_book_copy = copy.deepcopy(self)
@@ -357,7 +374,7 @@ if __name__ == '__main__':
     shelf1 = library.add_shelf("Fantasy")
     shelf2 = library.add_shelf("Science Fiction")
     shelf3 = library.add_shelf("Cooking")
-    pause_demo()
+    pause()
 
     # Show current state with report. It looks pretty empty!
     library.report()
@@ -389,7 +406,7 @@ if __name__ == '__main__':
     )
     print("Here is the summary Ender's Game.\n")
     print(book2.details['summary'])
-    pause_demo()
+    pause()
 
     # Books can easily be created from dictionaries.
     b3 = {
@@ -404,7 +421,7 @@ if __name__ == '__main__':
 
     book3 = Book(**b3)  # By unpacking like so.
 
-    # Book info is easily available by simply printing the book.
+    # Let's add one more.
     book4 = Book(
         title="On Food and Cooking",
         author="McGee, Harold",
@@ -412,12 +429,34 @@ if __name__ == '__main__':
         ISBN=9780684800011,
         page_count=884
     )
-    print(book4)
-    pause_demo()
+    # Books can be added to shelves individually with their own enshelf method.
+    book1.enshelf(shelf1)
+    book2.enshelf(shelf2)
+    pause()
+    library.report()
 
-    # Or by viewing all details with a book method.
-    book1.show_details()
-    pause_demo()
+    # Or books can be batch added through a shelf method.
+    shelf3.add_books(book3, book4)
+    pause()
+    library.report()
+
+    # Let's move The Lord of the Rings to the Fantasy shelf.
+    book3.enshelf(shelf1)
+    pause()
+    library.report()
+
+    # Extra copies of existing books can be created with unique IDs.
+    book1.add_copies(2)
+    pause()
+    library.report()
+
+    # Basic book info is available by simply printing the book.
+    print(book3)
+    pause()
+
+    # Or all book details can be shown with a book method.
+    book3.show_details()
+    pause()
 
     # Updating book details can be done easily with dictionaries.
     book_details = {
@@ -429,32 +468,16 @@ if __name__ == '__main__':
     }
     book1.details.update(book_details)
     book1.show_details()
-    pause_demo()
-
-    # Books can be added to shelves individually with their own enshelf method.
-    book1.enshelf(shelf1)
-    book2.enshelf(shelf2)
-    pause_demo()
-    library.report()
-
-    # Or books can be batch added through a shelf method.
-    shelf3.add_books(book3, book4)
-    pause_demo()
-    library.report()
-
-    # Extra copies of existing books can be created with unique IDs.
-    book1.add_copies(2)
-    pause_demo()
-    library.report()
+    pause()
 
     # Books can be checked out and tracked on the checked out "shelf".
     book1.checkout()  # The default period is for 2 weeks.
     book2.checkout(days=2, weeks=0)  # This can be altered.
     book3.checkout(weeks=-1)  # Oops! This one is overdue.
-    pause_demo()
+    pause()
     library.report()
 
     # Books can be checked in and automatically reshelved.
     book3.checkin()  # Let's check that bad boy in!
-    pause_demo()
+    pause()
     library.report()
