@@ -349,18 +349,21 @@ class Book(object):
 
         Returns: a list of the new book copies.
         """
-        print("Adding copies.")
-        results = []
-        for x in range(copy_num):
-            new_book_copy = copy.deepcopy(self)
-            new_book_copy.shelf = None
-            new_book_copy.copy = self.get_latest_copy() + 1
-            new_book_copy.enshelf(self.shelf)
-        return results
-        print(
-            "Added {num} copies of {book} to the {shelf} shelf."
-            .format(num="copy_num", book=self, shelf=self.shelf)
-        )
+        if self.shelf is not None:
+            print("Adding copies.")
+            results = []
+            for x in range(copy_num):
+                new_book_copy = copy.deepcopy(self)
+                new_book_copy.shelf = None
+                new_book_copy.copy = self.get_latest_copy() + 1
+                new_book_copy.enshelf(self.shelf)
+            return results
+            print(
+                "Added {num} copies of {book} to the {shelf} shelf."
+                .format(num="copy_num", book=self, shelf=self.shelf)
+            )
+        else:
+            print("Place the book on a shelf to make copies.")
 
 
 if __name__ == '__main__':
