@@ -59,7 +59,7 @@ class Library(object):
         """Report all books in library."""
         print("{library} Inventory\n".format(library=self))
         print(
-            "{:^20} | {:^20} | {:^10} | {}\n"
+            "{:^20} | {:^20} | {:^10} | {:^20}\n"
             .format("Title", "Author", "Status", "Due Date")
         )
         for shelf in self.shelves.itervalues():
@@ -75,6 +75,17 @@ class Shelf(object):
         self.name = name
         self.library = library
         self.books = {}
+
+    def add_books(self, *args):
+        """Add books objects to shelf."""
+        for book in args:
+            book.enshelf(self)
+
+    def remove_books(self, *args):
+        """Remove book objects from shelf."""
+        for book in args:
+            if book.book_id in self.books:
+                book.unshelf()
 
     def report_books(self):
         """Report books for tabular report."""
@@ -124,7 +135,7 @@ class Book(object):
             .format(
                 title=self.title,
                 author=self.author,
-                copy=self.copy, total=self.latest_copy(),
+                copy=self.copy, total=self.get_latest_copy(),
                 status=self.status,
                 due_date=self.due_date
             )
@@ -180,7 +191,7 @@ class Book(object):
         self.status = "Checked In"
         self.due_date = None
 
-    def latest_copy(self, search_lib=None):
+    def get_latest_copy(self, search_lib=None):
         """Find the lastest copy of a book."""
         library_to_search = search_lib or self.shelf.library
         latest_copy = 1
@@ -195,7 +206,7 @@ class Book(object):
         for x in range(copy_num):
             new_book_copy = copy.deepcopy(self)
             new_book_copy.shelf = None
-            new_book_copy.copy = self.latest_copy() + 1
+            new_book_copy.copy = self.get_latest_copy() + 1
             new_book_copy.enshelf(self.shelf)
         return new_book_copy
 
