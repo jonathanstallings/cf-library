@@ -77,6 +77,17 @@ class Library(object):
         """
         self.shelves.remove(shelf)
 
+    def get_shelf(self, index):
+        """
+        Return a given shelf object from library by index.
+
+        Args:
+            index: the index of the shelf
+
+        Returns: the shelf object
+        """
+        return self.shelves[index]
+
     def report(self):
         """Report all books in library in tabular format."""
         print("{library} Inventory\n".format(library=self))
@@ -97,7 +108,10 @@ class Shelf(object):
         self.books = {}
 
     def __str__(self):
-        return "{name}".format(name=self.name)
+        return (
+            "{index}. {name}"
+            .format(index=self.library.shelves.index(self), name=self.name)
+        )
 
     def add_books(self, *args):
         """
@@ -118,9 +132,20 @@ class Shelf(object):
             if book.book_id in self.books:
                 book.unshelf()
 
+    def get_book(self, book_id):
+        """
+        Return a given book object from shelf by book id.
+
+        Args:
+            book_id: the book_id of the book
+
+        Returns: the book object
+        """
+        return self.books[book_id]
+
     def report(self):
         """Report books on shelf in tabular format."""
-        print("{:_<80}".format(self.name))
+        print("{:_<80}".format(self))
         for book in self.books.itervalues():
             book.report()
         print("\n")
@@ -181,7 +206,7 @@ class Book(object):
         )
 
     def show_details(self):
-        """Show detailed info about a book."""
+        """Show detailed book information."""
         print self
         for key, value in self.details.iteritems():
             print("{k}: {v}".format(k=key, v=value))
@@ -270,14 +295,15 @@ class Book(object):
         Args:
             copy_num: the number of additional copies (default 1)
 
-        Returns: the newest book copy.
+        Returns: a list of the new book copies.
         """
+        results = []
         for x in range(copy_num):
             new_book_copy = copy.deepcopy(self)
             new_book_copy.shelf = None
             new_book_copy.copy = self.get_latest_copy() + 1
             new_book_copy.enshelf(self.shelf)
-        return new_book_copy
+        return results
 
 
 # if __name__ == '__main__':
