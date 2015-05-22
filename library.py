@@ -367,7 +367,7 @@ if __name__ == '__main__':
     show_logo()
     raw_input("\nPress enter to begin demonstration.\n")
 
-    # Initialize a the library.
+    # Initialize a library.
     library = Library("Lake City Public Library")
 
     # Add some shelves to the library.
@@ -440,7 +440,7 @@ if __name__ == '__main__':
     pause()
     library.report()
 
-    # Let's move The Lord of the Rings to the Fantasy shelf.
+    # Oops! Let's move The Lord of the Rings to the Fantasy shelf.
     book3.enshelf(shelf1)
     pause()
     library.report()
@@ -475,9 +475,11 @@ if __name__ == '__main__':
     book2.checkout(days=2, weeks=0)  # This can be altered.
     book3.checkout(weeks=-1)  # Oops! This one is overdue.
     pause()
-    library.report()
+    library.report()  # And that is reflected in the report.
 
     # Books can be checked in and automatically reshelved.
     book3.checkin()  # Let's check that bad boy in!
     pause()
     library.report()
+
+    print("The End.")
