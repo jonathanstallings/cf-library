@@ -31,6 +31,10 @@ def show_logo():
     print logo
 
 
+def pause_demo():
+    raw_input("\nPress enter to continue.\n")
+
+
 def set_due_date(days=0, weeks=0):
     """
     Set a due date based on time delta in days or weeks from today.
@@ -68,6 +72,7 @@ class Library(object):
         """
         shelf = Shelf(name, self)
         self.shelves.append(shelf)
+        print("Added {name} shelf.".format(name=name))
         return shelf
 
     def remove_shelf(self, shelf):
@@ -78,6 +83,7 @@ class Library(object):
             shelf: the shelf object to remove
         """
         self.shelves.remove(shelf)
+        print("Removed {name} shelf.".formt(name=shelf.name))
 
     def get_shelf(self, index):
         """
@@ -100,6 +106,7 @@ class Library(object):
         for shelf in self.shelves[1:]:
             shelf.report()
         self.checked_out.report()
+        pause_demo()
 
 
 class Shelf(object):
@@ -123,6 +130,11 @@ class Shelf(object):
         """
         for book in args:
             book.enshelf(self)
+        print(
+            "\nAdded books. {shelf} shelf now contains:\n"
+            .format(shelf=self.name)
+        )
+        self.report()
 
     def remove_books(self, *args):
         """
@@ -133,6 +145,12 @@ class Shelf(object):
         for book in args:
             if book.book_id in self.books:
                 book.unshelf()
+        print(
+            "Removed books from shelf.\n"
+            "The {shelf} shelf now contains:"
+            .format(shelf=self.name)
+        )
+        self.report()
 
     def get_book(self, book_id):
         """
@@ -232,9 +250,14 @@ class Book(object):
         elif self.book_id in shelf.books:
             print("The same copy is already on the shelf!")
         else:
-            self.unshelf()
+            if self.shelf:
+                self.unshelf()
             self.shelf = shelf
             shelf.books[self.book_id] = self
+        print(
+            "Shelved {book} onto the {shelf} shelf."
+            .format(book=self.title, shelf=shelf.name)
+        )
 
     def unshelf(self):
         """Remove a book from its shelf."""
@@ -242,6 +265,12 @@ class Book(object):
             self.shelf.books.pop(self.book_id)
             self.last_shelf = self.shelf
             self.shelf = None
+            print(
+                "Unshelved {book} from the {shelf} shelf."
+                .format(book=self.title, shelf=self.shelf)
+            )
+        else:
+            print("Book not on a shelf!")
 
     def reshelf(self):
         """Add a book to its last visited shelf."""
@@ -261,12 +290,17 @@ class Book(object):
         self.enshelf(self.shelf.library.checked_out)
         self.status = "Checked Out"
         self.due_date = set_due_date(days=days, weeks=weeks)
+        print (
+            "{book} checked out; due date is {date}."
+            .format(book=self.title, date=self.due_date)
+        )
 
     def checkin(self):
         """Check in and reshelf book to library."""
         self.reshelf()
         self.status = "Checked In"
         self.due_date = None
+        print ("{book} checked in.".format(book=self.title))
 
     def get_latest_copy(self, search_lib=None):
         """
@@ -306,11 +340,15 @@ class Book(object):
             new_book_copy.copy = self.get_latest_copy() + 1
             new_book_copy.enshelf(self.shelf)
         return results
+        print(
+            "Added {num} copies of {book} to the {shelf} shelf."
+            .format(num="copy_num", book=self, shelf=self.shelf)
+        )
 
 
 if __name__ == '__main__':
     show_logo()
-    response = raw_input("Press enter to begin demonstration.")
+    raw_input("\nPress enter to begin demonstration.\n")
 
     # Initialize a the library.
     library = Library("Lake City Public Library")
@@ -319,6 +357,8 @@ if __name__ == '__main__':
     shelf1 = library.add_shelf("Fantasy")
     shelf2 = library.add_shelf("Science Fiction")
     shelf3 = library.add_shelf("Cooking")
+    pause_demo()
+    library.report()
 
     # Create some books!
     book1 = Book(
@@ -357,14 +397,25 @@ if __name__ == '__main__':
     book1.enshelf(shelf1)
     book2.enshelf(shelf2)
     shelf3.add_books(book3, book4)
+    pause_demo()
+    library.report()
 
     # Add extra copies of a title.
     book1.add_copies(2)
+    pause_demo()
+    library.report()
 
     # Check out books!
     book1.checkout()
+    book2.checkout()
+    pause_demo()
+    library.report()
 
     # Check in books!
+    book2.checkin()
+    pause_demo()
+    library.report()
 
     # Report the library's inventory.
-    library.report()
+    # pause_demo()
+    # library.report()
