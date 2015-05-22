@@ -31,8 +31,16 @@ def show_logo():
     print logo
 
 
-def set_due_date(days=0, weeks=2):
-    """Set a due date based on time delta in days or weeks from today."""
+def set_due_date(days=0, weeks=0):
+    """
+    Set a due date based on time delta in days or weeks from today.
+
+    Args:
+        days: time delta in days from today
+        weeks: time delt in weeks from today
+
+    Returns: Due date in datetime format
+    """
     today = datetime.date.today()
     due_date = today + datetime.timedelta(days=days, weeks=weeks)
     return due_date
@@ -48,15 +56,29 @@ class Library(object):
         return "{name}".format(name=self.name)
 
     def add_shelf(self, name):
+        """
+        Create a new shelf object and add it to the library.
+
+        Args:
+            name: the name for the shelf object
+
+        Returns: the newly created shelf object
+        """
         shelf = Shelf(name, self)
         self.shelves.append(shelf)
         return shelf
 
     def remove_shelf(self, shelf):
+        """
+        Remove a shelf object from the library.
+
+        Args:
+            shelf: the shelf object to remove
+        """
         self.shelves.remove(shelf)
 
     def report(self):
-        """Report all books in library."""
+        """Report all books in library in tabular format."""
         print("{library} Inventory\n".format(library=self))
         print(
             "{:^20} | {:^20} | {:^10} | {:^20}\n"
@@ -78,18 +100,26 @@ class Shelf(object):
         return "{name}".format(name=self.name)
 
     def add_books(self, *args):
-        """Add books objects to shelf."""
+        """
+        Add books objects to shelf.
+
+        Args: Any number of book objects
+        """
         for book in args:
             book.enshelf(self)
 
     def remove_books(self, *args):
-        """Remove book objects from shelf."""
+        """
+        Remove book objects from shelf.
+
+        Args: Any number of book objects
+        """
         for book in args:
             if book.book_id in self.books:
                 book.unshelf()
 
     def report(self):
-        """Report books for tabular report."""
+        """Report books on shelf in tabular format."""
         print("{:_<80}".format(self.name))
         for book in self.books.itervalues():
             book.report()
@@ -100,6 +130,11 @@ class Book(object):
     """A class for books."""
     def __init__(self, title="", author="", copy=1, due=None, shelf=None,
                  **kwargs):
+        """
+        Initialize a new book object. Beyond the set attributes, Any number of
+        additional keyword argmuments can be passed to store more detailed
+        book information in the details dictionary.
+        """
         self.title = title
         self.author = author
         self.copy = copy
@@ -111,12 +146,14 @@ class Book(object):
 
     @property
     def book_id(self):
+        """Create unique id for book to store in shelf books dictionary."""
         return (
             "{title} c.{copy}".format(title=self.title, copy=self.copy)
         )
 
     @property
     def status(self):
+        """Check and return book status."""
         today = datetime.date.today()
         if self.due_date and self.due_date < today:
             return "Overdue"
@@ -150,14 +187,19 @@ class Book(object):
             print("{k}: {v}".format(k=key, v=value))
 
     def report(self):
-        """Report book info for tabular report."""
+        """Report basic book info in tabular format."""
         print(
             "{:<20} | {:<20} | {:<10} | {}"
             .format(self.book_id, self.author, self.status, self.due_date)
         )
 
     def enshelf(self, shelf):
-        """Add a book to a shelf."""
+        """
+        Add a book to a shelf.
+
+        Args:
+            shelf: the shelf object destination
+        """
         if self.shelf == shelf:
             print("Book already in shelf.")
         elif self.book_id in shelf.books:
@@ -182,19 +224,32 @@ class Book(object):
             print("Cannot reshelf: no previous shelf on record.")
 
     def checkout(self, days=0, weeks=2):
-        """Check out book from library."""
+        """
+        Check out book from library, defaulting to 2 weeks from today.
+
+        Args:
+            days: time delta in days from today
+            weeks: time delt in weeks from today
+        """
         self.enshelf(checked_out)
         self.status = "Checked Out"
         self.due_date = set_due_date(days=days, weeks=weeks)
 
     def checkin(self):
-        """Check in book to library."""
+        """Check in and reshelf book to library."""
         self.reshelf()
         self.status = "Checked In"
         self.due_date = None
 
     def get_latest_copy(self, search_lib=None):
-        """Find the number of the lastest copy of a book."""
+        """
+        Return the lastest copy number of a title in a library.
+
+        Args:
+            search_lib: the library to search (defaults to current library)
+
+        Returns: the latest copy number (int)
+        """
         library_to_search = search_lib or self.shelf.library
         latest_copy = 1
         for shelf in library_to_search.shelves:
@@ -204,7 +259,14 @@ class Book(object):
         return latest_copy
 
     def add_copies(self, copy_num=1):
-        """Add a given number of book copies to same location."""
+        """
+        Add a given number of book copies to same location.
+
+        Args:
+            copy_num: the number of additional copies (default 1)
+
+        Returns: the newest book copy.
+        """
         for x in range(copy_num):
             new_book_copy = copy.deepcopy(self)
             new_book_copy.shelf = None
