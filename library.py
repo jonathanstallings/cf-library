@@ -264,11 +264,11 @@ class Book(object):
         if self.shelf:
             self.shelf.books.pop(self.book_id)
             self.last_shelf = self.shelf
-            self.shelf = None
             print(
                 "Unshelved {book} from the {shelf} shelf."
-                .format(book=self.title, shelf=self.shelf)
+                .format(book=self.title, shelf=self.shelf.name)
             )
+            self.shelf = None
         else:
             print("Book not on a shelf!")
 
@@ -315,7 +315,7 @@ class Book(object):
         try:
             library_to_search = search_lib or self.shelf.library
         except AttributeError:
-            print("Not currently part of a library!\n")
+            pass
         else:
             for shelf in library_to_search.shelves:
                 for book in shelf.books.values():
@@ -358,33 +358,53 @@ if __name__ == '__main__':
     shelf2 = library.add_shelf("Science Fiction")
     shelf3 = library.add_shelf("Cooking")
     pause_demo()
+
+    # Show current state with report. It looks pretty empty!
     library.report()
 
     # Create some books!
+    # Title and author are most useful and kept as instance attributes.
     book1 = Book(
         title="The Name of the Wind",
         author="Rothfuss, Patrick",
-        call_num="SCI-FIC ROTHFUS 2007",
-        ISBN=9780756404079,
-        page_count=611
     )
 
+    # Though not required, any number of additional keyword arguments are
+    # captured in a dictionary accessible through the book's details attribute.
     book2 = Book(
         title="Ender's Game",
         author="Card, Orson Scott",
         call_num="SCI-FIC CARD 2013",
         ISBN=9780765370624,
-        page_count=380
+        page_count=380,
+        summary="Once again, the Earth is under attack. An alien species is "
+                "poised for a final assault. The survival of humanity depends "
+                "on a military genius who can defeat the aliens. But who? "
+                "Ender Wiggin is brilliant, ruthless, and cunning, a tactical "
+                "and strategic master, and a child. Recruited for military "
+                "training by the world government, Ender's childhood ends the "
+                "moment he enters his new home: Battle School. How will Ender "
+                "perform in real combat conditions? After all, Battle School "
+                "is just a game. Isn't it?"
     )
+    print("Here is the summary Ender's Game.\n")
+    print(book2.details['summary'])
+    pause_demo()
 
-    book3 = Book(
-        title="The Lord of the Rings",
-        author="Tolkien, J. R. R.",
-        call_num="SCI-FIC TOLKIEN 2004",
-        ISBN=9780618645619,
-        page_count=1178
-    )
+    # Books can easily be created from dictionaries.
+    b3 = {
+        'title': "The Lord of the Rings",
+        'author': "Tolkien, J. R. R.",
+        'call_num': "SCI-FIC TOLKIEN 2004",
+        'ISBN': 9780618645619,
+        'page_count': 1178,
+        'edition': "50th anniversary 1-vol. ed",
+        'publisher': "Boston : Houghton Mifflin, [2004]"
+    }
 
+    book3 = Book(**b3)  # By unpacking like so.
+
+    # Book info is easily available by simply printing the book.
     book4 = Book(
         title="On Food and Cooking",
         author="McGee, Harold",
@@ -392,30 +412,49 @@ if __name__ == '__main__':
         ISBN=9780684800011,
         page_count=884
     )
+    print(book4)
+    pause_demo()
 
-    # Add books to shelves.
+    # Or by viewing all details with a book method.
+    book1.show_details()
+    pause_demo()
+
+    # Updating book details can be done easily with dictionaries.
+    book_details = {
+        'call_num': "SCI-FIC ROTHFUS 2007",
+        'ISBN': 9780756404079,
+        'page_count': 661,
+        'series': "The Kingkiller Chronicle",
+        'publisher': "New York: DAW Books, Inc., c2007"
+    }
+    book1.details.update(book_details)
+    book1.show_details()
+    pause_demo()
+
+    # Books can be added to shelves individually with their own enshelf method.
     book1.enshelf(shelf1)
     book2.enshelf(shelf2)
+    pause_demo()
+    library.report()
+
+    # Or books can be batch added through a shelf method.
     shelf3.add_books(book3, book4)
     pause_demo()
     library.report()
 
-    # Add extra copies of a title.
+    # Extra copies of existing books can be created with unique IDs.
     book1.add_copies(2)
     pause_demo()
     library.report()
 
-    # Check out books!
-    book1.checkout()
-    book2.checkout()
+    # Books can be checked out and tracked on the checked out "shelf".
+    book1.checkout()  # The default period is for 2 weeks.
+    book2.checkout(days=2, weeks=0)  # This can be altered.
+    book3.checkout(weeks=-1)  # Oops! This one is overdue.
     pause_demo()
     library.report()
 
-    # Check in books!
-    book2.checkin()
+    # Books can be checked in and automatically reshelved.
+    book3.checkin()  # Let's check that bad boy in!
     pause_demo()
     library.report()
-
-    # Report the library's inventory.
-    # pause_demo()
-    # library.report()
