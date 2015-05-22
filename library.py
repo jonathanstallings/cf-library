@@ -1,6 +1,5 @@
 # coding=utf-8
 
-
 """
 GOAL: Use object-oriented Python to model a public library (w/ three classes:
 Library, Shelf, & Book). The library should be aware of a number of shelves.
@@ -31,6 +30,9 @@ class Library(object):
         self.shelves = {}
         # self.unshelved = {}
         # self.checked_out = {}
+
+    def __str__(self):
+        return "{name}".format(name=self.name)
 
     def add_shelf(self, name):
         shelf = Shelf(name, self)
@@ -89,6 +91,28 @@ class Book(object):
     @status.setter
     def status(self, status):
         self._status = status
+
+    def __str__(self):
+        return (
+            "Title: {title}\n"
+            "Author: {author}\n"
+            "Copy: {copy} of {total}\n"
+            "Status: {status}\n"
+            "Due Date: {due_date}\n"
+            .format(
+                title=self.title,
+                author=self.author,
+                copy=self.copy, total=self.latest_copy(),
+                status=self.status,
+                due_date=self.due_date
+            )
+        )
+
+    def info(self):
+        """Show detailed info about a book."""
+        print self
+        for key, value in self.details.iteritems():
+            print("{k}: {v}".format(k=key, v=value))
 
     def enshelf(self, shelf):
         """Add a book to a shelf."""
