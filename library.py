@@ -250,13 +250,18 @@ class Book(object):
 
         Returns: the latest copy number (int)
         """
-        library_to_search = search_lib or self.shelf.library
         latest_copy = 1
-        for shelf in library_to_search.shelves:
-            for book in shelf.books.values():
-                if book.title == self.title and book.copy > latest_copy:
-                    latest_copy = book.copy
-        return latest_copy
+        try:
+            library_to_search = search_lib or self.shelf.library
+        except AttributeError:
+            print("Not currently part of a library!\n")
+        else:
+            for shelf in library_to_search.shelves:
+                for book in shelf.books.values():
+                    if book.title == self.title and book.copy > latest_copy:
+                        latest_copy = book.copy
+        finally:
+            return latest_copy
 
     def add_copies(self, copy_num=1):
         """
