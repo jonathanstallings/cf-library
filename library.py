@@ -111,7 +111,7 @@ class Library(object):
         """Report all books in library in tabular format."""
         print("{library} Inventory\n".format(library=self))
         print(
-            "{:^20} | {:^20} | {:^10} | {:^20}\n"
+            "{:^25} | {:^20} | {:^15} | {}\n"
             .format("Title", "Author", "Status", "Due Date")
         )
         for shelf in self.shelves[1:]:
@@ -250,7 +250,7 @@ class Book(object):
     def report(self):
         """Report basic book info in tabular format."""
         print(
-            "{:<20} | {:<20} | {:<10} | {}"
+            "{:<25.25} | {:<20.20} | {:^15.15} | {}"
             .format(self.book_id, self.author, self.status, self.due_date)
         )
 
@@ -331,7 +331,7 @@ class Book(object):
         try:
             library_to_search = search_lib or self.shelf.library
         except AttributeError:
-            pass
+            pass  # Book not yet part of library; cannot compare total copies
         else:
             for shelf in library_to_search.shelves:
                 for book in shelf.books.values():
