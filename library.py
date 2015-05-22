@@ -212,7 +212,7 @@ class Book(object):
     def status(self):
         """Check and return book status."""
         today = datetime.date.today()
-        if self.due_date and self.due_date < today:
+        if self.due_date is not None and self.due_date < today:
             return "Overdue"
         else:
             return self._status
@@ -266,7 +266,7 @@ class Book(object):
         elif self.book_id in shelf.books:
             print("The same copy is already on the shelf!")
         else:
-            if self.shelf:
+            if self.shelf is not None:
                 self.unshelf()
             self.shelf = shelf
             shelf.books[self.book_id] = self
@@ -277,7 +277,7 @@ class Book(object):
 
     def unshelf(self):
         """Remove a book from its shelf."""
-        if self.shelf:
+        if self.shelf is not None:
             self.shelf.books.pop(self.book_id)
             self.last_shelf = self.shelf
             print(
@@ -290,14 +290,14 @@ class Book(object):
 
     def reshelf(self):
         """Add a book to its last visited shelf."""
-        if self.last_shelf:
+        if self.last_shelf is not None:
             self.enshelf(self.last_shelf)
         else:
             print("Cannot reshelf: no previous shelf on record.")
 
     def checkout(self, days=0, weeks=2):
         """
-        Check out book from library, defaulting to 2 weeks from today.
+        Check out book from library, term defaults to 2 weeks from today.
 
         Args:
             days: time delta in days from today
