@@ -310,51 +310,61 @@ class Book(object):
 
 if __name__ == '__main__':
     show_logo()
-    library = Library("Lake City Public Library")
     response = raw_input("Press enter to begin demonstration.")
+
+    # Initialize a the library.
+    library = Library("Lake City Public Library")
 
     # Add some shelves to the library.
     shelf1 = library.add_shelf("Fantasy")
     shelf2 = library.add_shelf("Science Fiction")
     shelf3 = library.add_shelf("Cooking")
 
+    # Create some books!
     book1 = Book(
-        title="The Scar",
-        author="Virginia Wolfe",
-        call_num="332.024 R3903o 2015",
-        ISBN=9781591847557,
-        page_count=211
+        title="The Name of the Wind",
+        author="Rothfuss, Patrick",
+        call_num="SCI-FIC ROTHFUS 2007",
+        ISBN=9780756404079,
+        page_count=611
     )
 
     book2 = Book(
-        title="Winning",
-        author="Charlie Sheen",
-        call_num="364.989 R3903o 2010",
-        ISBN=9783434147557,
-        page_count=150
+        title="Ender's Game",
+        author="Card, Orson Scott",
+        call_num="SCI-FIC CARD 2013",
+        ISBN=9780765370624,
+        page_count=380
     )
 
     book3 = Book(
-        title="Wounded",
-        author="Jim Bush",
-        call_num="334.053 R3903o 2014",
-        ISBN=9781593434427,
-        page_count=100
+        title="The Lord of the Rings",
+        author="Tolkien, J. R. R.",
+        call_num="SCI-FIC TOLKIEN 2004",
+        ISBN=9780618645619,
+        page_count=1178
     )
 
     book4 = Book(
-        title="Unbowed",
-        author="Sean Ramses",
-        call_num="323.054 T3433o 1978",
-        ISBN=9781343534556,
-        page_count=565
+        title="On Food and Cooking",
+        author="McGee, Harold",
+        call_num="641.5 M4599o 2004",
+        ISBN=9780684800011,
+        page_count=884
     )
 
+    # Add books to shelves.
     book1.enshelf(shelf1)
     book2.enshelf(shelf2)
     shelf3.add_books(book3, book4)
 
+    # Add extra copies of a title.
     book1.add_copies(2)
+
+    # Check out books!
     book1.checkout()
 
+    # Check in books!
+
+    # Report the library's inventory.
     library.report()
