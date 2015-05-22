@@ -57,15 +57,16 @@ class Library(object):
 
     def report_books(self):
         """Report all books in library."""
+        print("{library} Inventory\n".format(library=self))
+        print(
+            "{:^20} | {:^20} | {:^10} | {}\n"
+            .format("Title", "Author", "Status", "Due Date")
+        )
         for shelf in self.shelves.itervalues():
-            print("\n{shelf}".format(shelf=shelf.name))
-            for book in shelf.books.itervalues():
-                print(
-                    "{:^20} | {:^20} | {:^10} | {}"
-                    .format(
-                        book.book_id, book.author, book.status, book.due_date
-                    )
-                )
+            print(
+                "{:_<80}".format(shelf.name)
+            )
+            shelf.report_books()
 
 
 class Shelf(object):
@@ -74,6 +75,12 @@ class Shelf(object):
         self.name = name
         self.library = library
         self.books = {}
+
+    def report_books(self):
+        """Report books for tabular report."""
+        for book in self.books.itervalues():
+            book.report()
+        print("\n")
 
 
 class Book(object):
@@ -123,11 +130,18 @@ class Book(object):
             )
         )
 
-    def info(self):
+    def show_details(self):
         """Show detailed info about a book."""
         print self
         for key, value in self.details.iteritems():
             print("{k}: {v}".format(k=key, v=value))
+
+    def report(self):
+        """Report book info for tabular report."""
+        print(
+            "{:<20} | {:<20} | {:<10} | {}"
+            .format(self.book_id, self.author, self.status, self.due_date)
+        )
 
     def enshelf(self, shelf):
         """Add a book to a shelf."""
