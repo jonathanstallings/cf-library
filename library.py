@@ -16,6 +16,21 @@ import copy
 import datetime
 
 
+def show_logo():
+    """Print out the library logo."""
+    logo = (
+        " _      _ _                          \n"
+        "| |    (_) |                         \n"
+        "| |     _| |__  _ __ __ _ _ __ _   _ \n"
+        "| |    | | '_ \| '__/ _` | '__| | | |\n"
+        "| |____| | |_) | | | (_| | |  | |_| |\n"
+        "|______|_|_.__/|_|  \__,_|_|   \__, |\n"
+        "                                __/ |\n"
+        "                               |___/ \n"
+    )
+    print logo
+
+
 def set_due_date(days=0, weeks=2):
     """Set a due date based on time delta in days or weeks from today."""
     today = datetime.date.today()
@@ -28,8 +43,6 @@ class Library(object):
     def __init__(self, name):
         self.name = name
         self.shelves = {}
-        # self.unshelved = {}
-        # self.checked_out = {}
 
     def __str__(self):
         return "{name}".format(name=self.name)
@@ -49,7 +62,9 @@ class Library(object):
             for book in shelf.books.itervalues():
                 print(
                     "{:^20} | {:^20} | {:^10} | {}"
-                    .format(book.book_id, book.author, book.status, book.due_date)
+                    .format(
+                        book.book_id, book.author, book.status, book.due_date
+                    )
                 )
 
 
@@ -171,6 +186,8 @@ class Book(object):
         return new_book_copy
 
 
+# if __name__ == '__main__':
+show_logo()
 library = Library("Lake City Public Library")
 
 checked_out = library.add_shelf("Checked Out")
