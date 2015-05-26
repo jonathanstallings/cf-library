@@ -5,7 +5,7 @@
     * [repl.it link](http://repl.it/pC3/2)
     
 2.  Make a simple HTML page to manage Todos.
-    * [jsfiddle link](http://jsfiddle.net)
+    * [jsfiddle link](http://jsfiddle.net/jonathanstallings/xcxpL6x6/)
 
 3.  Generate a Django app that allows a user to create, edit, update and destroy users:
     * [Heroku link](https://herokuapp.com)
