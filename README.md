@@ -6,7 +6,7 @@
     * [GitHub Repo](https://github.com/jonathanstallings/cf-library)    
 
 2.  Make a simple HTML page to manage Todos.
-    * [jsfiddle link](http://jsfiddle.net/jonathanstallings/xcxpL6x6/)
+    * [jsfiddle link](https://jsfiddle.net/jonathanstallings/xcxpL6x6/6/)
     * [GitHub Repo](https://github.com/jonathanstallings/cf-todo)  
 
 3.  Generate a Django app that allows a user to create, edit, update and destroy users:
